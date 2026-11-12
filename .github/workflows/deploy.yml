@@ -1,0 +1,79 @@
+# Testa, compila e publica o Gerador de Tablita no GitHub Pages.
+#
+# Pré-requisito (uma vez): Settings → Pages → Build and deployment →
+# Source = "GitHub Actions". Não é usada branch gh-pages: o site é publicado
+# como artefato pelo mecanismo oficial (upload-pages-artifact + deploy-pages).
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Permissões mínimas do GITHUB_TOKEN (nenhum token pessoal é usado).
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Uma publicação por vez. Execuções novas ficam na fila e substituem as
+# pendentes mais antigas; a que já está publicando não é interrompida.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Testes e build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Node.js (versão de .nvmrc)
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Testes unitários
+        run: npm test
+
+      - name: Configurar GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Build de produção
+        id: build
+        run: npm run build:pages
+        env:
+          # "/<repositório>" (ou "" para domínio próprio / <usuário>.github.io).
+          BASE_HREF: ${{ steps.pages.outputs.base_path }}/
+
+      - name: Verificar arquivos gerados
+        run: npm run verify:dist
+        env:
+          BASE_HREF: ${{ steps.pages.outputs.base_path }}/
+
+      - name: Enviar artefato do site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          # Pasta lida de angular.json pelo script de build.
+          path: ${{ steps.build.outputs.dist }}
+
+  deploy:
+    name: Publicar
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

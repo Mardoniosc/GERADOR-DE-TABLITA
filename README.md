@@ -45,7 +45,87 @@ Abra http://localhost:8080, aguarde o primeiro carregamento e depois teste sem r
 npm test
 ```
 
-São 62 testes em Vitest: motor de regras, interpretação da notação, amostras reais de cada categoria, integridade da coleção, serviço de sorteio, tabuleiro e botão **GERAR TABLITA**.
+São 69 testes em Vitest: motor de regras, interpretação da notação, amostras reais de cada categoria, integridade da coleção, serviço de sorteio, atualização do PWA, tabuleiro e botão **GERAR TABLITA**.
+
+## Publicação automática
+
+Qualquer push na branch `main` executa o workflow [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml). Ele roda os testes, compila o Angular para o subdiretório do GitHub Pages, valida os arquivos gerados e publica a nova versão. Se um teste ou uma verificação falhar, nada é publicado.
+
+```
+push em main ──► npm ci ──► npm test ──► build:pages ──► verify:dist ──► upload ──► deploy (GitHub Pages)
+```
+
+- **Mecanismo oficial:** `actions/configure-pages`, `actions/upload-pages-artifact` e `actions/deploy-pages`. Não há pacote npm `gh-pages` nem commits de arquivos compilados.
+- **Sem branch `gh-pages`:** com a fonte "GitHub Actions", o site é publicado como artefato no ambiente `github-pages`. Uma branch `gh-pages` não é necessária e não é usada.
+- **Segurança:** o workflow usa só o `GITHUB_TOKEN` automático, com permissões `contents: read`, `pages: write` e `id-token: write`. Nenhum token pessoal nem segredo é necessário.
+- **Concorrência:** grupo `pages` com `cancel-in-progress: false`. Uma publicação em andamento termina, e as execuções pendentes mais antigas são substituídas pela mais recente. Assim, um build antigo nunca sobrescreve um mais novo.
+- **Node.js:** a versão vem de [`.nvmrc`](.nvmrc).
+
+### Configuração inicial no GitHub (uma vez)
+
+1. **Branch principal `main`.** O workflow publica a partir de `main`. Se o repositório ainda usa `master`, renomeie em **Settings → General → Default branch → ✏️ (Rename branch)** para `main`. O GitHub redireciona PRs e links. Depois, na sua máquina:
+   ```bash
+   git branch -m master main
+   ```
+   ```bash
+   git fetch origin && git branch -u origin/main main && git remote set-head origin -a
+   ```
+2. **Fonte de publicação.** Abra **Settings → Pages → Build and deployment → Source** e escolha **GitHub Actions**.
+3. **Ações habilitadas.** Em **Settings → Actions → General**, confirme que as GitHub Actions estão permitidas. As ações usadas são todas oficiais (`actions/*`).
+4. O repositório precisa ser **público** no plano gratuito do GitHub.
+
+### Primeiro deploy
+
+- Faça push na `main`, **ou**
+- Abra **Actions → Deploy GitHub Pages → Run workflow** (execução manual, `workflow_dispatch`).
+
+### Acompanhar e acessar
+
+- Acompanhe em **Actions → Deploy GitHub Pages**. O job **Testes e build** mostra no resumo a lista de verificações do build. O job **Publicar** mostra o link do site.
+- URL publicada: `https://<usuário>.github.io/<repositório>/`. Para este repositório: **https://mardoniosc.github.io/GERADOR-DE-TABLITA/**. O endereço também aparece em **Settings → Pages** e no ambiente **github-pages** da página inicial do repositório.
+
+### base-href (subdiretório)
+
+O site fica em `/<repositório>/`, e o base-href é definido automaticamente, sem o nome do repositório fixo no código:
+
+1. No CI, vem de `actions/configure-pages` (`base_path`), que também cobre domínio próprio e repositórios `<usuário>.github.io` (publicados na raiz).
+2. Localmente, `npm run build:pages` usa o nome do repositório do `git remote origin`.
+3. Para forçar outro valor, preencha `config.pagesBaseHref` no `package.json` (ex.: `"/meu-repo/"`) ou defina a variável `BASE_HREF`.
+
+Todos os caminhos do app são relativos ao `<base href>`: JS, CSS, ícones, `manifest.webmanifest`, `assets/data/*.json` e `ngsw-worker.js`. O `404.html` (cópia do `index.html`) faz qualquer endereço inexistente dentro do site abrir o app.
+
+### Atualização do PWA após um deploy
+
+O service worker compara os hashes do `ngsw.json` e baixa a nova versão em segundo plano. O app verifica atualizações ao abrir, a cada 30 minutos e quando volta ao primeiro plano. Quando a nova versão está pronta, aparece o aviso **"Nova versão disponível · Atualizar"**. Qualquer nova abertura da página já usa a versão mais recente, e se o cache ficar inconsistente o app recarrega sozinho.
+
+### Testar o build do Pages localmente
+
+```bash
+npm run build:pages
+```
+
+```bash
+npm run verify:dist
+```
+
+```bash
+npm run serve:prod
+```
+
+O servidor local imita o GitHub Pages, inclusive o subdiretório e o `404.html`. Abra o endereço impresso no terminal, por exemplo http://localhost:8080/GERADOR-DE-TABLITA/.
+
+### Diagnóstico de erros
+
+| Sintoma | Causa provável / solução |
+|---|---|
+| Workflow não dispara no push | O push não foi na `main` (veja o passo 1) ou as Actions estão desabilitadas. |
+| Erro em **Configurar GitHub Pages** ("Get Pages site failed" / 404) | A fonte do Pages não está em **GitHub Actions** (passo 2). |
+| Falha em **Instalar dependências** | `package-lock.json` desatualizado: rode `npm install` localmente e faça commit do lockfile. |
+| Falha em **Testes unitários** | Rode `npm test` localmente. Nada é publicado enquanto houver teste falhando. |
+| Falha em **Verificar arquivos gerados** | O resumo do job mostra qual verificação falhou (base-href, JSON, manifest, service worker). Reproduza com `npm run build:pages` e `npm run verify:dist`. |
+| Falha em **Publicar** ("Branch is not allowed to deploy") | Em **Settings → Environments → github-pages → Deployment branches**, permita a `main`. |
+| Site em branco ou 404 em JS/CSS | base-href incorreto. Confira o `<base href>` no código-fonte da página publicada. |
+| Versão antiga continua aparecendo | Aguarde o aviso "Nova versão disponível" ou recarregue a página. Em último caso, limpe os dados do site no navegador. |
 
 ## Scripts
 
@@ -56,7 +136,9 @@ São 62 testes em Vitest: motor de regras, interpretação da notação, amostra
 | `npm test` | Testes unitários (Vitest), execução única |
 | `npm run test:watch` | Testes em modo observação |
 | `npm run import:tablitas` | Reimporta as tabelas oficiais de `data-sources/` e regera `tablitas.json`, `metadata.json` e o relatório de auditoria |
-| `npm run serve:prod` | Serve o build de produção em http://localhost:8080 |
+| `npm run build:pages` | Build de produção para o GitHub Pages (base-href automático + `404.html`) |
+| `npm run verify:dist` | Valida o build (index, base-href, JSON, manifest, service worker); falha com código 1 |
+| `npm run serve:prod` | Serve o build como o GitHub Pages, em http://localhost:8080/ (ou no subdiretório do base-href) |
 | `npm run icons` | Regera os ícones PWA |
 
 ## Dados
@@ -115,12 +197,14 @@ src/app/
       board.service.ts              Geometria/numeração para apresentação
       tablita-notation.service.ts   Interpreta notação → tabuleiro (usa o motor)
       tablita.service.ts            Carrega, valida e sorteia (signals)
+      app-update.service.ts         Atualização do PWA após novo deploy
     data/tablitas-integrity.spec.ts Validação automatizada da coleção
   features/generator/components/
     tablita-generator/              Página: cabeçalho, tabuleiro, botão, contador, edição
     tablita-result/                 Código, categoria, notação e lances interpretados
   shared/components/checkers-board/ Tabuleiro 8×8 reutilizável
-scripts/                            Importador, gerador de ícones, servidor estático
+scripts/                            Importador, ícones, build/verificação do Pages, servidor estático
+.github/workflows/deploy.yml        CI/CD: testes → build → verificação → GitHub Pages
 ```
 
 - O motor de regras é um único módulo TypeScript sem dependências. O importador (Node) e o app (Angular) usam o mesmo código, então a lógica de notação não é duplicada.

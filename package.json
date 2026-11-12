@@ -10,7 +10,9 @@
     "test:watch": "ng test",
     "import:tablitas": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-tablitas.ts",
     "serve:prod": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/serve-dist.ts",
-    "icons": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-icons.ts"
+    "icons": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/generate-icons.ts",
+    "build:pages": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/build-pages.ts",
+    "verify:dist": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/verify-dist.ts"
   },
   "prettier": {
     "printWidth": 100,
@@ -47,5 +49,8 @@
   },
   "engines": {
     "node": ">=22.18.0"
+  },
+  "config": {
+    "pagesBaseHref": ""
   }
 }
