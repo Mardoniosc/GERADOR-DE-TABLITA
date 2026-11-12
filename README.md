@@ -73,6 +73,7 @@ push em main ──► npm ci ──► npm test ──► build:pages ──►
 2. **Fonte de publicação.** Abra **Settings → Pages → Build and deployment → Source** e escolha **GitHub Actions**.
 3. **Ações habilitadas.** Em **Settings → Actions → General**, confirme que as GitHub Actions estão permitidas. As ações usadas são todas oficiais (`actions/*`).
 4. O repositório precisa ser **público** no plano gratuito do GitHub.
+5. **Branch autorizada no ambiente `github-pages`.** Ao ativar o Pages, o GitHub cria o ambiente `github-pages` e libera a publicação apenas a partir da branch padrão daquele momento. Renomear a branch depois **não** atualiza essa regra. Em **Settings → Environments → github-pages → Deployment branches and tags**, a lista deve conter `main`. Se aparecer `master`, remova-a e adicione `main`.
 
 ### Primeiro deploy
 
@@ -123,7 +124,7 @@ O servidor local imita o GitHub Pages, inclusive o subdiretório e o `404.html`.
 | Falha em **Instalar dependências** | `package-lock.json` desatualizado: rode `npm install` localmente e faça commit do lockfile. |
 | Falha em **Testes unitários** | Rode `npm test` localmente. Nada é publicado enquanto houver teste falhando. |
 | Falha em **Verificar arquivos gerados** | O resumo do job mostra qual verificação falhou (base-href, JSON, manifest, service worker). Reproduza com `npm run build:pages` e `npm run verify:dist`. |
-| Falha em **Publicar** ("Branch is not allowed to deploy") | Em **Settings → Environments → github-pages → Deployment branches**, permita a `main`. |
+| Falha em **Publicar**: `Branch "main" is not allowed to deploy to github-pages due to environment protection rules` | A regra do ambiente ainda autoriza a branch antiga (ex.: `master`). Em **Settings → Environments → github-pages → Deployment branches and tags**, troque-a por `main` e use **Re-run failed jobs** na execução que falhou. |
 | Site em branco ou 404 em JS/CSS | base-href incorreto. Confira o `<base href>` no código-fonte da página publicada. |
 | Versão antiga continua aparecendo | Aguarde o aviso "Nova versão disponível" ou recarregue a página. Em último caso, limpe os dados do site no navegador. |
 
