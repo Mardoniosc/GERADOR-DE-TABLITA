@@ -1,0 +1,53 @@
+<section class="result" aria-live="polite">
+  <p class="eyebrow">
+    <span data-testid="tablita-code">TABLITA {{ record().code }}</span>
+    <span class="index">nº {{ record().index }} de {{ total() }}</span>
+  </p>
+  <h3 class="category" data-testid="tablita-category">
+    {{ heading() }}
+    @if (!tabuaName()) {
+      <span class="pending" title="O CODEX define as Tábuas A, B e C, mas nenhuma fonte acessível as relaciona às entradas da tabela da IDF. Veja docs/RELATORIO-AUDITORIA.md.">
+        Tábua CODEX a confirmar
+      </span>
+    }
+  </h3>
+
+  <div class="block">
+    <p class="label">
+      {{ record().category === 'POSITIONS' ? 'Posição sorteada' : 'Sequência de lances' }}
+    </p>
+    <p class="notation" data-testid="tablita-notation">{{ record().notation }}</p>
+  </div>
+
+  @if (record().category === 'MOVES') {
+    <ol class="moves" aria-label="Lances interpretados">
+      @for (pair of pairs(); track pair.number) {
+        <li>
+          <span class="n">{{ pair.number }}.</span>
+          <span class="mv">{{ pair.white?.longNotation }}</span>
+          <span class="mv">{{ pair.black?.longNotation ?? '' }}</span>
+        </li>
+      }
+    </ol>
+  } @else {
+    <ul class="moves relocations" aria-label="Peças deslocadas">
+      @for (r of relocations(); track r.color) {
+        <li>
+          <span class="dot" [class.white]="r.color === 'WHITE'" [class.black]="r.color === 'BLACK'"></span>
+          <span class="n">{{ r.name }}</span>
+          <span class="mv">{{ r.text }}</span>
+        </li>
+      }
+    </ul>
+  }
+
+  <p class="turn">
+    Jogam as <strong>{{ sideToMove() }}</strong>
+  </p>
+
+  @for (issue of record().issues; track issue) {
+    <p class="note">{{ issue }}</p>
+  }
+
+  <p class="source">{{ editionLabel() }} · IDF Tables of draw</p>
+</section>

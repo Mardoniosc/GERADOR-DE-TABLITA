@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-11-12T22:24:55.011Z",
+  "consultedAt": "2026-11-12",
+  "defaultEdition": "IDF-2024-BR-772",
+  "editions": [
+    {
+      "id": "IDF-2024-BR-772",
+      "label": "IDF 2024 · 772 posições (vigente)",
+      "shortLabel": "IDF 2024 · 772",
+      "title": "Table of draw in IDF competitions (772 positions) for Brazilian draughts",
+      "approved": "Aprovada pela diretoria da IDF em 16/12/2023; válida a partir de 01/01/2024",
+      "validity": "Vigente para competições oficiais da IDF desde 01/01/2024.",
+      "active": true,
+      "sourceUrl": "https://idf64.org/wp-content/uploads/2024/01/IDF-Draw-772-positions-Brazilian-draughts-01.01.2024.docx",
+      "sourceFile": "data-sources/idf/IDF-Draw-772-positions-Brazilian-draughts-01.01.2024.docx",
+      "declaredTotal": 772,
+      "slots": 780,
+      "records": 772,
+      "withdrawn": 8,
+      "byCategory": {
+        "MOVES": 361,
+        "POSITIONS": 410
+      },
+      "verified": 771,
+      "pending": 1,
+      "invalid": 0
+    },
+    {
+      "id": "IDF-2017-BR-745",
+      "label": "IDF 2017 · \"745\" (inativa)",
+      "shortLabel": "IDF 2017 · 745",
+      "title": "Table of draw in IDF competitions for Brazilian draughts (arquivo \"Table_of_draw_745Braz\")",
+      "approved": "Aprovada pela diretoria da IDF em 20/09/2017",
+      "validity": "Inativa: a IDF informa que não deve ser usada em competições oficiais a partir de 01/01/2024.",
+      "active": false,
+      "sourceUrl": "https://idf64.org/wp-content/uploads/2016/05/Table_of_draw_745Braz-20.09.2017.doc",
+      "sourceFile": "data-sources/idf/Table_of_draw_745Braz-20.09.2017.doc",
+      "declaredTotal": 745,
+      "slots": 745,
+      "records": 736,
+      "withdrawn": 9,
+      "byCategory": {
+        "MOVES": 342,
+        "POSITIONS": 393
+      },
+      "verified": 735,
+      "pending": 1,
+      "invalid": 0
+    }
+  ],
+  "categories": {
+    "MOVES": {
+      "name": "Sorteio de lances",
+      "description": "Sequência de lances iniciais em notação algébrica abreviada (coluna de origem + casa de destino), jogada a partir da posição inicial."
+    },
+    "POSITIONS": {
+      "name": "Posição com peças deslocadas",
+      "description": "Posição inicial com uma pedra branca e/ou uma pedra preta deslocadas (\"a3-a5 f6-g5\"; \"---\" = sem deslocamento). As brancas jogam primeiro."
+    }
+  },
+  "codexMapping": {
+    "status": "PENDING",
+    "byCategory": {
+      "MOVES": null,
+      "POSITIONS": null
+    },
+    "tabuaNames": {
+      "A": "Tábua A – Sorteio convencional",
+      "B": "Tábua B – Sorteio voadores",
+      "C": "Tábua C – Promotions"
+    },
+    "note": "O CODEX (arts. 85 e 86) define as Tábuas A, B e C, mas não lista seus lances, e nenhuma fonte acessível relaciona as tábuas às entradas da tabela da IDF. Para confirmar, edite codexMapping em scripts/import-tablitas.ts e rode npm run import:tablitas."
+  },
+  "boardNumbering": {
+    "status": "PENDING",
+    "description": "Casas escuras numeradas de 1 (b8) a 32 (g1), da esquerda para a direita e de cima para baixo, vistas pelas brancas. Convenção de exibição adotada pelo app; as tabelas oficiais usam apenas notação algébrica."
+  },
+  "withdrawnSlots": [
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "I-21",
+      "column": "I",
+      "row": 21,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XI-14",
+      "column": "XI",
+      "row": 14,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XI-22",
+      "column": "XI",
+      "row": 22,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XIV-6",
+      "column": "XIV",
+      "row": 6,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XV-3",
+      "column": "XV",
+      "row": 3,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XV-7",
+      "column": "XV",
+      "row": 7,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XV-9",
+      "column": "XV",
+      "row": 9,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2024-BR-772",
+      "code": "XXIV-5",
+      "column": "XXIV",
+      "row": 5,
+      "marker": "***",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "I-17",
+      "column": "I",
+      "row": 17,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XI-18",
+      "column": "XI",
+      "row": 18,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XIII-3",
+      "column": "XIII",
+      "row": 3,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XIV-22",
+      "column": "XIV",
+      "row": 22,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XV-12",
+      "column": "XV",
+      "row": 12,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XV-16",
+      "column": "XV",
+      "row": 16,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XV-18",
+      "column": "XV",
+      "row": 18,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XXIII-20",
+      "column": "XXIII",
+      "row": 20,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    },
+    {
+      "edition": "IDF-2017-BR-745",
+      "code": "XXVI-5",
+      "column": "XXVI",
+      "row": 5,
+      "marker": "*** ",
+      "meaning": "Posição retirada pela IDF (\"*** New draw\": se sorteada, sorteia-se novamente)."
+    }
+  ]
+}

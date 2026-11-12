@@ -1,0 +1,94 @@
+<header class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true"></span>
+    <div>
+      <h1>GERADOR DE TABLITA</h1>
+      <p class="subtitle">Damas Brasileiras – 64 Casas</p>
+    </div>
+  </div>
+</header>
+
+<main class="stage">
+  <div class="board-col">
+    <h2 class="title">SUA TABLITA</h2>
+    <div class="board-wrap" [class.drawing]="drawing()">
+      <app-checkers-board
+        [board]="board()"
+        [origins]="highlights().origins"
+        [targets]="highlights().targets"
+        [revision]="current()?.drawNumber ?? 0"
+        [label]="boardLabel()"
+      />
+    </div>
+  </div>
+
+  <div class="info-col">
+    @switch (tablitas.status()) {
+      @case ('error') {
+        <div class="message error" role="alert">
+          <p>Não foi possível carregar as Tablitas.</p>
+          <p class="detail">{{ tablitas.error() }}</p>
+          <button type="button" class="ghost" (click)="retry()">Tentar novamente</button>
+        </div>
+      }
+      @case ('ready') {
+        @if (current(); as drawn) {
+          <app-tablita-result
+            [drawn]="drawn"
+            [tabuaName]="tabuaName()"
+            [editionLabel]="tablitas.edition()?.label ?? ''"
+            [total]="tablitas.editionRecords().length"
+          />
+        } @else {
+          <div class="message">
+            <p>Posição inicial.</p>
+            <p class="detail">Toque em <strong>GERAR TABLITA</strong> para sortear uma posição oficial.</p>
+          </div>
+        }
+      }
+      @default {
+        <div class="message"><p class="detail">Carregando Tablitas…</p></div>
+      }
+    }
+  </div>
+</main>
+
+<footer class="actions">
+  <button
+    type="button"
+    class="generate"
+    data-testid="generate"
+    [class.pulse]="drawing()"
+    [disabled]="tablitas.status() !== 'ready' || available() === 0"
+    (click)="generate()"
+  >
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M17.6 6.4A8 8 0 1 0 20 12h-2a6 6 0 1 1-1.8-4.3L13 11h7V4l-2.4 2.4Z" />
+    </svg>
+    GERAR TABLITA
+  </button>
+
+  <div class="meta">
+    @if (tablitas.status() === 'ready') {
+      <p class="count" data-testid="available-count">
+        <strong>{{ available() }}</strong> posições disponíveis
+      </p>
+      @if (tablitas.editions().length > 1) {
+        <div class="editions" role="radiogroup" aria-label="Edição da tabela oficial">
+          @for (e of tablitas.editions(); track e.id) {
+            <button
+              type="button"
+              role="radio"
+              [attr.aria-checked]="tablitas.edition()?.id === e.id"
+              [class.active]="tablitas.edition()?.id === e.id"
+              [title]="e.validity"
+              (click)="selectEdition(e.id)"
+            >
+              {{ e.shortLabel }}
+            </button>
+          }
+        </div>
+      }
+    }
+  </div>
+</footer>

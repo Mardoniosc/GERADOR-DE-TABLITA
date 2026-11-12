@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start", "--", "--port", "4300"],
+      "port": 4300
+    },
+    {
+      "name": "prod-pwa",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "serve:prod"],
+      "port": 8080
+    }
+  ]
+}

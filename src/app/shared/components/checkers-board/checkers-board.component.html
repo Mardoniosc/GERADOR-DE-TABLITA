@@ -1,0 +1,50 @@
+<div class="board-frame" [class.with-coords]="showCoordinates()">
+  <div class="board" role="img" [attr.aria-label]="description()">
+    @for (cell of cells(); track revision() + '-' + cell.algebraic) {
+      <div
+        class="square"
+        [class.dark]="cell.dark"
+        [class.light]="!cell.dark"
+        [class.origin]="cell.origin"
+        [class.target]="cell.target"
+        [attr.data-square]="cell.algebraic"
+        [attr.title]="cell.dark ? cell.label : null"
+      >
+        @if (showNumbers() && cell.number !== null) {
+          <span class="number" aria-hidden="true">{{ cell.number }}</span>
+        }
+        @if (cell.piece; as piece) {
+          <span
+            class="piece"
+            [class.white]="piece.color === 'WHITE'"
+            [class.black]="piece.color === 'BLACK'"
+            [class.king]="piece.type === 'KING'"
+            [attr.data-piece]="piece.color + '-' + piece.type"
+            [style.animation-delay.ms]="(cell.row * 8 + cell.col) * 6"
+            aria-hidden="true"
+          >
+            @if (piece.type === 'KING') {
+              <svg class="crown" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 8.5 7.5 12 12 5l4.5 7L21 8.5 19 18H5L3 8.5Z" />
+                <rect x="5" y="19.2" width="14" height="1.8" rx=".9" />
+              </svg>
+            }
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  @if (showCoordinates()) {
+    <div class="coords files" aria-hidden="true">
+      @for (f of files; track f) {
+        <span>{{ f }}</span>
+      }
+    </div>
+    <div class="coords ranks" aria-hidden="true">
+      @for (r of ranks; track r) {
+        <span>{{ r }}</span>
+      }
+    </div>
+  }
+</div>

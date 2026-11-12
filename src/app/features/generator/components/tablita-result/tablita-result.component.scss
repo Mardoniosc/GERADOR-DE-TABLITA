@@ -1,0 +1,140 @@
+:host {
+  display: block;
+}
+
+.result {
+  display: grid;
+  gap: 14px;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--text-strong);
+
+  .index {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.category {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: -6px 0 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.pending {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  cursor: help;
+}
+
+.block {
+  display: grid;
+  gap: 6px;
+}
+
+.label {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.notation {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--text-strong);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--text);
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .n {
+    color: var(--text-muted);
+  }
+
+  &.relocations {
+    flex-direction: column;
+  }
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  &.white {
+    background: #efe6d2;
+  }
+
+  &.black {
+    background: #1c1918;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.3);
+  }
+}
+
+.turn {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text);
+
+  strong {
+    color: var(--text-strong);
+  }
+}
+
+.note,
+.source {
+  margin: 0;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.note::before {
+  content: 'ⓘ ';
+}
