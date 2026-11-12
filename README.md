@@ -83,15 +83,26 @@ push em main ──► npm ci ──► npm test ──► build:pages ──►
 ### Acompanhar e acessar
 
 - Acompanhe em **Actions → Deploy GitHub Pages**. O job **Testes e build** mostra no resumo a lista de verificações do build. O job **Publicar** mostra o link do site.
-- URL publicada: `https://<usuário>.github.io/<repositório>/`. Para este repositório: **https://mardoniosc.github.io/GERADOR-DE-TABLITA/**. O endereço também aparece em **Settings → Pages** e no ambiente **github-pages** da página inicial do repositório.
+- **URL publicada: https://tablita.servicosmsc.com.br/** (domínio próprio). O endereço também aparece em **Settings → Pages** e no ambiente **github-pages** da página inicial do repositório.
+- Sem domínio próprio, o GitHub publica em `https://<usuário>.github.io/<repositório>/`.
 
-### base-href (subdiretório)
+### Domínio próprio
 
-O site fica em `/<repositório>/`, e o base-href é definido automaticamente, sem o nome do repositório fixo no código:
+O domínio é configurado só no GitHub. Não é preciso mudar o workflow nem o código.
 
-1. No CI, vem de `actions/configure-pages` (`base_path`), que também cobre domínio próprio e repositórios `<usuário>.github.io` (publicados na raiz).
-2. Localmente, `npm run build:pages` usa o nome do repositório do `git remote origin`.
-3. Para forçar outro valor, preencha `config.pagesBaseHref` no `package.json` (ex.: `"/meu-repo/"`) ou defina a variável `BASE_HREF`.
+1. **DNS:** registro `CNAME` com o nome do subdomínio (ex.: `tablita`) apontando para `<usuário>.github.io`, sem o nome do repositório.
+2. **GitHub:** em **Settings → Pages → Custom domain**, informe o domínio, salve e, depois que o certificado estiver pronto, marque **Enforce HTTPS**. O service worker exige HTTPS.
+3. **Novo deploy:** rode o workflow de novo (**Actions → Deploy GitHub Pages → Run workflow**) para gerar o build com `<base href="/">`. Sem isso, o site continua apontando JS e CSS para `/<repositório>/` e eles dão 404.
+
+Com publicação via Actions, o arquivo `CNAME` no repositório não é usado. Para o navegador, o domínio novo é outro site, então quem instalou o PWA pelo endereço antigo precisa instalar de novo.
+
+### base-href
+
+O base-href é definido automaticamente, sem o nome do repositório fixo no código:
+
+1. No CI, vem de `actions/configure-pages` (`base_path`): `/` para domínio próprio ou repositórios `<usuário>.github.io`, e `/<repositório>/` nos demais casos. Essa origem tem prioridade sobre as outras.
+2. Localmente, `npm run build:pages` usa `config.pagesBaseHref` do `package.json`, hoje `"/"` por causa do domínio próprio. Se esse campo estiver vazio, usa o nome do repositório do `git remote origin`.
+3. A variável `BASE_HREF` força qualquer valor.
 
 Todos os caminhos do app são relativos ao `<base href>`: JS, CSS, ícones, `manifest.webmanifest`, `assets/data/*.json` e `ngsw-worker.js`. O `404.html` (cópia do `index.html`) faz qualquer endereço inexistente dentro do site abrir o app.
 
@@ -113,7 +124,7 @@ npm run verify:dist
 npm run serve:prod
 ```
 
-O servidor local imita o GitHub Pages, inclusive o subdiretório e o `404.html`. Abra o endereço impresso no terminal, por exemplo http://localhost:8080/GERADOR-DE-TABLITA/.
+O servidor local imita o GitHub Pages, inclusive o caminho do base-href e o `404.html`. Abra o endereço impresso no terminal: http://localhost:8080/ com o domínio próprio, ou http://localhost:8080/<repositório>/ sem ele.
 
 ### Diagnóstico de erros
 
@@ -125,7 +136,7 @@ O servidor local imita o GitHub Pages, inclusive o subdiretório e o `404.html`.
 | Falha em **Testes unitários** | Rode `npm test` localmente. Nada é publicado enquanto houver teste falhando. |
 | Falha em **Verificar arquivos gerados** | O resumo do job mostra qual verificação falhou (base-href, JSON, manifest, service worker). Reproduza com `npm run build:pages` e `npm run verify:dist`. |
 | Falha em **Publicar**: `Branch "main" is not allowed to deploy to github-pages due to environment protection rules` | A regra do ambiente ainda autoriza a branch antiga (ex.: `master`). Em **Settings → Environments → github-pages → Deployment branches and tags**, troque-a por `main` e use **Re-run failed jobs** na execução que falhou. |
-| Site em branco ou 404 em JS/CSS | base-href incorreto. Confira o `<base href>` no código-fonte da página publicada. |
+| Site em branco ou 404 em JS/CSS | base-href incorreto. Confira o `<base href>` no código-fonte da página publicada. Depois de adicionar ou remover um domínio próprio, rode o workflow de novo. |
 | Versão antiga continua aparecendo | Aguarde o aviso "Nova versão disponível" ou recarregue a página. Em último caso, limpe os dados do site no navegador. |
 
 ## Scripts
